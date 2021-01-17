@@ -64,11 +64,8 @@ def calculate_sum_of_elliptic_curve_points(p, a, b, x1, y1, x2, y2):
         print(x3)
         print(y3)
     elif x1 == x2 and y1 == y2:
-        lam = ((3 * power_bin(x1,p,2) + a) * rozszerzony_algorytm_euklidesa((2 * y1 % p), p)) % p
-        x3 = (power_bin(lam, p, 2) - x1 - x2) % p
-        y3 = (lam * (x1 - x3) - y1) % p
-        print(x3)
-        print(y3)
+        print("infty")
+        print("infty")
     elif x1 == x2 and y1 == (-y2 + p):
         print("infty")
         print("infty")

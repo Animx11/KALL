@@ -50,7 +50,7 @@ def generate_points(A, B, p):
         test = (power_bin_wm(generated_x, 3) + (A * generated_x) + B)
         x = czy_reszta_kwadratowa(test, p)
 
-    generated_y = pierwiastek(generated_x, p)
+    generated_y = pierwiastek(test, p)
 
     print("X = " + str(generated_x))
     print("Y = " + str(generated_y))
