@@ -14,7 +14,7 @@ def power_bin(b, n, k):
     return sum
 
 
-def rozszerzony_algorytm_euklidesa(b, n):
+def extended_euclidean_algorithm(b, n):
 
     if b < n:
         b, n = n, b
@@ -57,18 +57,28 @@ def calculate_sum_of_elliptic_curve_points(p, a, b, x1, y1, x2, y2):
         return 0
     x2 = int(x2)
     y2 = int(y2)
-    if x1 != x2:
-        lam = ((y2 - y1) * rozszerzony_algorytm_euklidesa(((x2-x1) % p), p)) % p
+
+    if x1 == x2 and y1 == (-y2 + p):
+        print("infty")
+        print("infty")
+
+    elif x1 == x2 and y1 == y2 == 0:
+        print("infty")
+        print("infty")
+
+    elif x1 == x2 and y1 == y2:
+        lam = ((3 * power_bin(x1, p, 2) + a) * extended_euclidean_algorithm((2 * y1 % p), p)) % p
         x3 = (power_bin(lam, p, 2) - x1 - x2) % p
         y3 = (lam * (x1 - x3) - y1) % p
         print(x3)
         print(y3)
-    elif x1 == x2 and y1 == y2:
-        print("infty")
-        print("infty")
-    elif x1 == x2 and y1 == (-y2 + p):
-        print("infty")
-        print("infty")
+
+    elif x1 != x2:
+        lam = ((y2 - y1) * extended_euclidean_algorithm(((x2-x1) % p), p)) % p
+        x3 = (power_bin(lam, p, 2) - x1 - x2) % p
+        y3 = (lam * (x1 - x3) - y1) % p
+        print(x3)
+        print(y3)
 
 
 p = int(input("Podaj wartość p: "))
