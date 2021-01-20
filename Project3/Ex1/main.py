@@ -1,5 +1,6 @@
 import random
 
+
 def dec_to_bin(k):
     binary_string = bin(k).replace("0b", '')[::-1]
     return str(binary_string)
@@ -13,6 +14,7 @@ def power_bin(b, n, k):
             sum = (sum * b * int(k_to_binary_string[i])) % n
         b = (b * b) % n
     return int(sum)
+
 
 def power_bin_notmod(b, k):
     sum = 1
@@ -48,7 +50,7 @@ def generate_elliptic_curve(p):
         return [generated_A, generated_B]
 
 
-def pierwiastek(b, p):
+def square_root_on_field_fp(b, p):
 
     k = p - 3
     k = k // 4
@@ -56,7 +58,7 @@ def pierwiastek(b, p):
     return int(power_bin(b, p, z))
 
 
-def czy_reszta_kwadratowa(b, p):
+def is_quadratic_residue(b, p):
     c = p-1
     c = c//2
     num = power_bin(b, p, c)
@@ -71,9 +73,9 @@ def generate_points(A, B, p):
     while not x:
         generated_x = random.randrange(0, p)
         test = (power_bin_notmod(generated_x, 3) + (A * generated_x) + B)
-        x = czy_reszta_kwadratowa(test, p)
+        x = is_quadratic_residue(test, p)
 
-    generated_y = pierwiastek(test, p)
+    generated_y = square_root_on_field_fp(test, p)
 
     return [generated_x, generated_y]
 
@@ -175,7 +177,7 @@ k = int(input("How many bits for prime number: "))
 key_pair = generate_elgamal_keypair_by_elliptic_curve(k)
 
 
-print("\nKlucz publiczny:\n")
+print("\nPublic Key:\n")
 print("p = " + str(key_pair[0][2]))
 print("A = " + str(key_pair[0][3]))
 print("B = " + str(key_pair[0][4]))
@@ -184,7 +186,7 @@ print("a2 = " + str(key_pair[0][0][1]))
 print("a1 = " + str(key_pair[0][1][0]))
 print("a2 = " + str(key_pair[0][1][1]))
 
-print("\nKlucz prywatny:\n")
+print("\nPrivate Key:\n")
 print("p = " + str(key_pair[1][2]))
 print("A = " + str(key_pair[1][3]))
 print("B = " + str(key_pair[1][4]))
