@@ -14,71 +14,48 @@ def power_bin(b, n, k):
     return sum
 
 
-def extended_euclidean_algorithm(b, n):
+def extended_euclidean_algorithm(a, b):
+    mod = b
+    s = 1
+    t = 0
+    u = 0
+    v = 1
+    while 0 < b:
+        q = (a//b)
 
-    if b < n:
-        b, n = n, b
-    mat = ([int(b), int(1), int(0)], [int(n), int(0), int(1)])
-
-    con = False
-    while not con:
-        if mat[0][0] > mat[1][0]:
-
-            if mat[0][0] % mat[1][0] == 0:
-                con = True
-                break
-
-            a = mat[0][0] // mat[1][0]
-            mat[0][1] = int(mat[0][1]) - (a * mat[1][1])
-            mat[0][2] = mat[0][2] - (a * mat[1][2])
-            mat[0][0] = mat[0][0] % mat[1][0]
-
-        elif mat[0][0] < mat[1][0]:
-
-            if mat[1][0] % mat[0][0] == 0:
-                con = True
-                break
-
-            a = mat[1][0] // mat[0][0]
-            mat[1][1] = mat[1][1] - (a * mat[0][1])
-            mat[1][2] = mat[1][2] - (a * mat[0][2])
-            mat[1][0] = mat[1][0] % mat[0][0]
-
-    if mat[0][0] != 0:
-        return mat[1][2]
-    else:
-        return mat[0][2]
+        a, b, s, t, u, v = b, (a%b), u, v, (s-u*q), (t-v*q)
 
 
-def calculate_sum_of_elliptic_curve_points(p, a, b, x1, y1, x2, y2):
-    if x2 == "infty" or y2 == "infty":
-        print(x1)
-        print(y1)
-        return 0
-    x2 = int(x2)
-    y2 = int(y2)
+    if s < 0:
+        s = s + mod
+    return [a, s, t]
 
-    if x1 == x2 and y1 == (-y2 + p):
-        print("infty")
-        print("infty")
 
-    elif x1 == x2 and y1 == y2 == 0:
-        print("infty")
-        print("infty")
 
-    elif x1 == x2 and y1 == y2:
-        lam = ((3 * power_bin(x1, p, 2) + a) * extended_euclidean_algorithm((2 * y1 % p), p)) % p
-        x3 = (power_bin(lam, p, 2) - x1 - x2) % p
-        y3 = (lam * (x1 - x3) - y1) % p
-        print(x3)
-        print(y3)
+def calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2):
+    if point2[0] == "infty" or point2[1] == "infty":
+        return point1
+    point2[0] = int(point2[0])
+    point2[1] = int(point2[1])
 
-    elif x1 != x2:
-        lam = ((y2 - y1) * extended_euclidean_algorithm(((x2-x1) % p), p)) % p
-        x3 = (power_bin(lam, p, 2) - x1 - x2) % p
-        y3 = (lam * (x1 - x3) - y1) % p
-        print(x3)
-        print(y3)
+    if point1[0] == point2[0] and point1[1] == (-point2[1] + p):
+        return ["infty", "infty"]
+
+    elif point1[0] == point2[0] and point1[1] == point2[1] == 0:
+        return ["infty", "infty"]
+
+    elif point1[0] == point2[0] and point1[1] == point2[1]:
+        lam = ((3 * power_bin(point1[0], p, 2) + a) * extended_euclidean_algorithm((2 * point1[1] % p), p)[1]) % p
+        x3 = (power_bin(lam, p, 2) - point1[0] - point2[0]) % p
+        y3 = (lam * (point1[0] - x3) - point1[1]) % p
+        return [x3, y3]
+
+    elif point1[0] != point2[0]:
+        lam = ((point2[1] - point1[1]) * extended_euclidean_algorithm(((point2[0]-point1[0]) % p), p)[1]) % p
+        x = (power_bin(lam, p, 2) - point1[0] - point2[0]) % p
+        y = (lam * (point1[0] - x) - point1[1]) % p
+        return [x, y]
+
 
 
 p = int(input("Podaj wartość p: "))
@@ -89,5 +66,8 @@ y1 = int(input("Podaj wartość y1: "))
 x2 = input("Podaj wartość x2: ")
 y2 = input("Podaj wartość y2: ")
 
-calculate_sum_of_elliptic_curve_points(p, a, b, x1, y1, x2, y2)
+point1 = [x1, y1]
+point2 = [x2, y2]
+
+print(calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2))
 

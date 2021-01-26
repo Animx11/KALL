@@ -80,40 +80,22 @@ def generate_points(A, B, p):
     return [generated_x, generated_y]
 
 
-def extended_euclidean_algorithm(b, n):
+def extended_euclidean_algorithm(a, b):
+    mod = b
+    s = 1
+    t = 0
+    u = 0
+    v = 1
+    while 0 < b:
+        q = (a//b)
 
-    if b < n:
-        b, n = n, b
-    mat = ([int(b), int(1), int(0)], [int(n), int(0), int(1)])
+        a, b, s, t, u, v = b, (a%b), u, v, (s-u*q), (t-v*q)
 
-    con = False
-    while not con:
-        if mat[0][0] > mat[1][0]:
 
-            if mat[0][0] % mat[1][0] == 0:
-                con = True
-                break
+    if s < 0:
+        s = s + mod
+    return [a, s, t]
 
-            a = mat[0][0] // mat[1][0]
-            mat[0][1] = int(mat[0][1]) - (a * mat[1][1])
-            mat[0][2] = mat[0][2] - (a * mat[1][2])
-            mat[0][0] = mat[0][0] % mat[1][0]
-
-        elif mat[0][0] < mat[1][0]:
-
-            if mat[1][0] % mat[0][0] == 0:
-                con = True
-                break
-
-            a = mat[1][0] // mat[0][0]
-            mat[1][1] = mat[1][1] - (a * mat[0][1])
-            mat[1][2] = mat[1][2] - (a * mat[0][2])
-            mat[1][0] = mat[1][0] % mat[0][0]
-
-    if mat[0][0] != 0:
-        return mat[1][2]
-    else:
-        return mat[0][2]
 
 
 def calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2):
@@ -129,13 +111,13 @@ def calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2):
         return ["infty", "infty"]
 
     elif point1[0] == point2[0] and point1[1] == point2[1]:
-        lam = ((3 * power_bin(point1[0], p, 2) + a) * extended_euclidean_algorithm((2 * point1[1] % p), p)) % p
+        lam = ((3 * power_bin(point1[0], p, 2) + a) * extended_euclidean_algorithm((2 * point1[1] % p), p)[1]) % p
         x3 = (power_bin(lam, p, 2) - point1[0] - point2[0]) % p
         y3 = (lam * (point1[0] - x3) - point1[1]) % p
         return [x3, y3]
 
     elif point1[0] != point2[0]:
-        lam = ((point2[1] - point1[1]) * extended_euclidean_algorithm(((point2[0]-point1[0]) % p), p)) % p
+        lam = ((point2[1] - point1[1]) * extended_euclidean_algorithm(((point2[0]-point1[0]) % p), p)[1]) % p
         x = (power_bin(lam, p, 2) - point1[0] - point2[0]) % p
         y = (lam * (point1[0] - x) - point1[1]) % p
         return [x, y]
