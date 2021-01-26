@@ -1,3 +1,5 @@
+import random
+
 
 def dec_to_bin(k):
     binary_string = bin(k).replace("0b", '')[::-1]
@@ -58,16 +60,38 @@ def calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2):
 
 
 
-p = int(input("Podaj wartość p: "))
-a = int(input("Podaj wartość A: "))
-b = int(input("Podaj wartość B: "))
-x1 = int(input("Podaj wartość x1: "))
-y1 = int(input("Podaj wartość y1: "))
-x2 = input("Podaj wartość x2: ")
-y2 = input("Podaj wartość y2: ")
+def calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, point, n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return point
+    elif n % 2 == 1:
+        return calculate_sum_of_elliptic_curve_points(p, A, B, point, calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, point, n - 1))
+    elif n % 2 == 0:
+        return calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, calculate_sum_of_elliptic_curve_points(p, A, B, point, point), n/2)
 
-point1 = [x1, y1]
-point2 = [x2, y2]
 
-print(calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2))
+p = int(input("Enter the value of p: "))
+A = int(input("Enter the value of A: "))
+B = int(input("Enter the value of B: "))
+a1 = int(input("Enter the value of a1: "))
+a2 = int(input("Enter the value of a2: "))
+b1 = int(input("Enter the value of b1: "))
+b2 = int(input("Enter the value of b2: "))
+pm1 = int(input("Enter the value of pm1: "))
+pm2 = int(input("Enter the value of pm2: "))
+
+
+x = random.randrange(1, p)
+
+Q = [a1, a2]
+P = [b1, b2]
+pm = [pm1, pm2]
+
+xQ = calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, Q, x)
+xP = calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, P, x)
+xPpm = calculate_sum_of_elliptic_curve_points(p, A, B, xP, pm)
+print(xQ)
+print(xPpm)
+
 

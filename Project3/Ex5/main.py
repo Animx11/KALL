@@ -1,4 +1,3 @@
-
 def dec_to_bin(k):
     binary_string = bin(k).replace("0b", '')[::-1]
     return str(binary_string)
@@ -57,17 +56,33 @@ def calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2):
         return [x, y]
 
 
+def calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, point, n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return point
+    elif n % 2 == 1:
+        return calculate_sum_of_elliptic_curve_points(p, A, B, point, calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, point, n - 1))
+    elif n % 2 == 0:
+        return calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, calculate_sum_of_elliptic_curve_points(p, A, B, point, point), n/2)
 
-p = int(input("Podaj wartość p: "))
-a = int(input("Podaj wartość A: "))
-b = int(input("Podaj wartość B: "))
-x1 = int(input("Podaj wartość x1: "))
-y1 = int(input("Podaj wartość y1: "))
-x2 = input("Podaj wartość x2: ")
-y2 = input("Podaj wartość y2: ")
 
-point1 = [x1, y1]
-point2 = [x2, y2]
+p = int(input("Enter the value of p: "))
+A = int(input("Enter the value of A: "))
+B = int(input("Enter the value of B: "))
+a1 = int(input("Enter the value of a1: "))
+a2 = int(input("Enter the value of a2: "))
+n = int(input("Enter the value of n: "))
+C1x = int(input("Enter the value of C1x: "))
+C1y = int(input("Enter the value of C1y: "))
+C2x = int(input("Enter the value of C2x: "))
+C2y = int(input("Enter the value of C2y: "))
 
-print(calculate_sum_of_elliptic_curve_points(p, a, b, point1, point2))
 
+C1 = [C1x, C1y]
+C2 = [C2x, C2y]
+
+nC1 = calculate_multiplication_of_elliptic_curve_point_by_n(p, A, B, C1, n)
+nC1[1] = -nC1[1] + p
+decrypted = calculate_sum_of_elliptic_curve_points(p, A, B, C2, nC1)
+print(decrypted)
